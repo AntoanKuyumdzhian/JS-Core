@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Countries Table</title>
+    <style>
+        td, th {
+            background: #DDD;
+            padding: 5px 10px
+        }
+
+        input[type='text'] {
+            width: 60px
+        }
+    </style>
+    <script src="jquery-3.2.1.min.js"></script>
+</head>
+<body>
+<table id="countriesTable">
+    <tr>
+        <th>Country</th>
+        <th>Capital</th>
+        <th>Action</th>
+    </tr>
+    <tr>
+        <td><input type="text" id="newCountryText"/></td>
+        <td><input type="text" id="newCapitalText"/></td>
+        <td><a href="#" id="createLink">[Create]</a></td>
+    </tr>
+</table>
+<script>$(() => initializeTable())</script>
+</body>
+
+<script>
+    function initializeTable() {
+        $('#createLink').click(addRow);
+
+        createRow('Bulgaria', 'Sofia');
+        createRow('Germany', 'Berlin');
+        createRow('Russia', 'Moscow');
+
+        fixLinks();
+
+        function fixLinks() {
+            $('tr a').show();
+            $('tr:last-child a:contains(Down)').hide();
+            $('tr:eq(2) a:contains(Up)').hide();
+        }
+
+        function addRow() {
+            let country = $('#newCountryText').val();
+            let capital = $('#newCapitalText').val();
+            createRow(country, capital);
+            fixLinks();
+        }
+
+        function createRow(country, capital) {
+            $('<tr>')
+                .append($('<td>').text(country))
+                .append($('<td>').text(capital))
+                .append($('<td>')
+                    .append($('<a href="#">[Up]</a>').click(moveUp))
+                    .append($('<a href="#">[Down]</a>').click(moveDown))
+                    .append($('<a href="#">[Delete]</a>').click(deleteRow)))
+                    .appendTo($('#countriesTable'));
+        }
+
+        function moveUp() {
+            let currentRow = $(this).parent().parent();
+            currentRow.insertBefore(currentRow.prev());
+            fixLinks();
+        }
+
+        function moveDown() {
+            let currentRow = $(this).parent().parent();
+            currentRow.insertAfter(currentRow.next());
+            fixLinks();
+        }
+
+        function deleteRow() {
+           $(this).parent().parent().remove();
+           fixLinks();
+        }
+    }
+</script>
+</html>
